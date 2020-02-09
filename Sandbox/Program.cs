@@ -1,83 +1,103 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Sandbox
 {
-    class Program
+    // the Counter class is information
+    // that is stored for a "yes", "no" or "maybe" object
+    public class Counter
     {
-        static void Main(string[] args)
+        // percentage is a nullable value and not a zero
+        private double? _percentage;
+
+        public Counter(string name, int count)
         {
-            // local variables to keep track of choice option
-            int yesCounter = 4;
-            int noCounter = 2;
-            int maybeCounter = 3;
+            Name = name;
+            Count = count;
+        }
 
-            // keep track of the total of all choices made
-            int total = yesCounter + noCounter + maybeCounter;
+        // created properties for choice options 
+        // and the count for each
+        public string Name { get; }
+        public int Count { get; private set; }
 
-            // percent of each option made, rounded to two decimal places
-            var yesPercent = Math.Round(yesCounter * 100.0 / total, 2);
-            var noPercent = Math.Round(noCounter * 100.0 / total, 2);
-            var maybePercent = Math.Round(maybeCounter * 100.0 / total, 2);
+        // return as a checked null, then assigned to percent
+        public double GetPercent(int total) => _percentage ?? (_percentage = Math.Round(Count * 100.0 / total, 2)).Value;
 
+        public void AddExcess(double excess) => _percentage += excess;
+
+    }
+
+    public class CounterManager
+    {
+        // makes the CounterManager constructor messier
+        public CounterManager(params Counter[] counters)
+        {
+            Counters = new List<Counter>(counters);
+        }
+
+        // Counters property is a List of Counter
+        public List<Counter> Counters { get; set; }
+
+        public int Total() => Counters.Sum(x => x.Count);
+
+        public double TotalPercent() => Counters.Sum(x => x.GetPercent(Total()));
+
+        public void AnnouncWinner()
+        {
             // calculate the remaining 0.01 percent
-            var excess = Math.Round(100 - yesPercent - noPercent - maybePercent, 2);
+            var excess = Math.Round(100 - TotalPercent(), 2);
 
             // display that excess 0.01 percent
             Console.WriteLine($"Excess: {excess}");
 
-            // logic that determines which option wins
-            if (yesCounter > noCounter)
+            var biggestAmountOfVotes = Counters.Max(x => x.Count);
+
+            var winners = Counters.Where(x => x.Count == biggestAmountOfVotes).ToList();
+
+            if (winners.Count == 1)
             {
-                if (yesCounter > maybeCounter)
-                {
-                    Console.WriteLine($"Yes Won");
-                    yesPercent += excess;
-                }
-                else if (maybeCounter > yesCounter)
-                {
-                    Console.WriteLine($"Maybe Won");
-                    maybePercent += excess;
-                }
-                else
-                {
-                    Console.WriteLine($"DRAW");
-                    noPercent += excess;
-                }
-            }
-            else if (noCounter > yesCounter)
-            {
-                if (noCounter > maybeCounter)
-                {
-                    Console.WriteLine($"No Won");
-                    noPercent += excess;
-                }
-                else if (maybeCounter > noCounter)
-                {
-                    Console.WriteLine($"Maybe Won");
-                    maybePercent += excess;
-                }
-                else
-                {
-                    Console.WriteLine($"DRAW");
-                    yesPercent += excess;
-                }
-            }
-            else if (maybeCounter > yesCounter)
-            {
-                Console.WriteLine($"Maybe Won");
-                maybePercent += excess;
+                var winner = winners.First();
+                winner.AddExcess(excess);
+                Console.WriteLine($"{winner.Name} Won");
             }
             else
             {
-                Console.WriteLine($"DRAW");
+                if (winners.Count != Counters.Count)
+                {
+                    var lowestAmountOfVotes = Counters.Min(x => x.Count);
+                    var loser = Counters.First(x => x.Count == biggestAmountOfVotes);
+                    loser.AddExcess(excess);
+
+                }
+                Console.WriteLine(string.Join(" -DRAW- ", winners.Select(x => x.Name)));
             }
 
             // application statistics
-            Console.WriteLine($"Yes Counts: {yesCounter}, Percentage: {Math.Round(yesPercent, 2)}%");
-            Console.WriteLine($"No Counts: {noCounter}, Percentage: {Math.Round(noPercent, 2)}%");
-            Console.WriteLine($"Maybe Counts: {maybeCounter}, Percentage: {Math.Round(maybePercent, 2)}%");
+            foreach (var c in Counters)
+            {
+                Console.WriteLine($"{c.Name} Counts: {c.Count}, Percentage: {c.GetPercent(Total())}%");
+            }
 
-            Console.WriteLine($"Total Percentage: {Math.Round(yesPercent + noPercent + maybePercent, 2)}%");
+            Console.WriteLine($"Total Percentage: {Math.Round(TotalPercent(), 2)}%");
+        }
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // create variables to access the information
+            // of the Counter class
+            var yes = new Counter("Yes", 4);
+            var no = new Counter("No", 4);
+            var maybe = new Counter("Maybe", 4);
+            var hopefully = new Counter("Hopefully", 4);
+
+            // makes the CounterManager contructor cleaner
+            var manager = new CounterManager(yes, no, maybe, hopefully);
+
+            manager.AnnouncWinner();
         }
     }
 }
