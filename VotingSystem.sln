@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sandbox", "Sandbox\Sandbox.csproj", "{CDCECF35-4232-4207-BB42-C8E54E7C1455}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sandbox", "Sandbox\Sandbox.csproj", "{CDCECF35-4232-4207-BB42-C8E54E7C1455}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VotingSystem.Test", "VotingSystem.Test\VotingSystem.Test.csproj", "{0E069B77-FBEB-45AF-A658-ED35C1467A7E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{CDCECF35-4232-4207-BB42-C8E54E7C1455}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CDCECF35-4232-4207-BB42-C8E54E7C1455}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CDCECF35-4232-4207-BB42-C8E54E7C1455}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E069B77-FBEB-45AF-A658-ED35C1467A7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E069B77-FBEB-45AF-A658-ED35C1467A7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E069B77-FBEB-45AF-A658-ED35C1467A7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E069B77-FBEB-45AF-A658-ED35C1467A7E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
