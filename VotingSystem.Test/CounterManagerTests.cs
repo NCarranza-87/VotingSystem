@@ -7,28 +7,23 @@ using static Xunit.Assert;
 
 namespace VotingSystem.Test
 {
-    public class CounterTests
+    public class CounterManagerTests
     {
         public const string CounterName = "Counter Name";
         public Counter _counter = new Counter { Name = CounterName, Count = 5 };
 
-        [Fact]
-        public void HasName()
-        {
-            Equal(CounterName, _counter.Name);
-        }
 
         [Fact]
         public void GetStatistics_IncludesCounterName()
         {
-            var statistics = _counter.GetStatistics(5);
+            var statistics = new CounterManager().GetStatistics(_counter, 5);
             Equal(CounterName, statistics.Name);
         }
 
         [Fact]
         public void GetStatistics_IncludesCounterCount()
         {
-            var statistics = _counter.GetStatistics(5);
+            var statistics = new CounterManager().GetStatistics(_counter, 5);
             Equal(5, statistics.Count);
         }
 
@@ -40,7 +35,7 @@ namespace VotingSystem.Test
         public void GetStatistics_ShowPercentageUptoTwoDecimalsBasedOnTotalCount(int count, int total, double expected)
         {
             _counter.Count = count;
-            var statistics = _counter.GetStatistics(total);
+            var statistics = new CounterManager().GetStatistics(_counter, total);
             Equal(expected, statistics.Percent);
         }
 
@@ -121,15 +116,17 @@ namespace VotingSystem.Test
         public int Count { get; set; }
         public double Percent { get; internal set; }
 
-        internal Counter GetStatistics(int totalCount)
-        {
-            Percent = CounterManager.RoundUp(Count * 100.0 / totalCount);
-            return this;
-        }
+        
     }
 
     public class CounterManager
     {
+        public Counter GetStatistics(Counter counter, int totalCount)
+        {
+            counter.Percent = RoundUp(counter.Count * 100.0 / totalCount);
+            return counter;
+        }
+
         public void ResolveExcess(List<Counter> counters)
         {
             var totalPercent = counters.Sum(x => x.Percent);
@@ -151,6 +148,6 @@ namespace VotingSystem.Test
             }
         }
 
-        public static double RoundUp(double num) => Math.Round(num, 2);
+        private static double RoundUp(double num) => Math.Round(num, 2);
     }
 }
